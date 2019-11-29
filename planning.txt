@@ -1,0 +1,52 @@
+minecraft helper roadmap
+
+secure against mouse input when moving items
+move things out of inventory class into gui class
+improve inventory class
+move things into key combos to prevent collision
+faster detect inventory location
+detect items on the go (opencv?)
+golden apple support
+crafting support
+empty slot detection
+put keyboard listener onto different thread if possible
+sort items
+auto fisher
+auto clicker (for farms)
+auto bridge
+auto mine + torch
+hotbar swap
+move helper classes into lib folder
+
+classes:
+Rectangle class
+    fields:
+    x, y, w, h
+    methods:
+    getCenter
+
+Vector2 class
+    fields:
+    x, y
+
+Inventory class
+    fields:
+    bounds = Rectangle
+    keyItemLoc = dict<string, vector2>
+    armorSlotLoc = vector2[]
+    craftingSlotLoc = vector2[]
+    outputSlotLoc = vector2
+    offhandSlotLoc = vector2
+    storageSlotLoc = vector2[][]
+    hotbarSlotLoc = vector2[]
+    methods:
+    findBounds()
+    findSlots() prereq: bounds != None
+    findKeyItem(name)
+
+InventoryManager class
+    fields:
+    inv = Intentory
+    methods:
+    swapItemAt(vector2, vector2)
+    debugReset()  // dumps items and put new items into right spot
