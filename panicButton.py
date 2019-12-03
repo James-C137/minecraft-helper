@@ -7,17 +7,36 @@ import lib.indicator as indicator
 from lib.inventory import Inventory
 from lib.vector2 import Vector2
 
-class InventoryManager:
+class PanicButton:
   MOUSE_SPEED = 0
   PAUSE_TIME = 0.055
+  KEY_ITEM_NAMES = [
+    'totem-of-undying',
+    'water-bucket'
+  ]
 
+  hookIDs = []
   inventory:Inventory = None
 
   def __init__(self):
     self.inventory = Inventory()
+    self.start()
+  
+  def start(self):
+    kb.add_hotkey('ctrl+1', self.findInventory)
+    kb.add_hotkey('ctrl+2', lambda:self.findKeyItems(self.KEY_ITEM_NAMES))
+    kb.add_hotkey('r', self.activate)
+    print('@panicButton: ctrl+1 to find inventory')
+    print('@panicButton: ctrl+2 to find key items')
+    print('@panicButton: r to activate panic button')
+
+  def stop(self):
+    for hookID in self.hookIDs:
+      kb.remove_hotkey(hookID)
   
   #region functionality
-  def panicButton(self):
+  def activate(self):
+    print('@panicButton: activated')
     kb.press_and_release('e')
     time.sleep(self.PAUSE_TIME)
     if ('totem-of-undying' in self.inventory.keyItems):
@@ -30,33 +49,20 @@ class InventoryManager:
 
   #region setup
   def findInventory(self):
-    print('setting bounds...')
+    print('@panicButton: setting bounds...')
     found = self.inventory.setBounds()
     indicator.printState(found)
     indicator.show(found)
     self.inventory.setSlots()
-    print()
-
-  def findKeyItem(self, name:str):
-    print('finding item "' + name + '"...')
-    found = self.inventory.findKeyItem(name)
-    indicator.printState(found)
-    indicator.show(found)
-    print()
 
   def findKeyItems(self, names:List[str]):
-    print('finding items...')
+    print('@panicButton: finding {} items...'.format(len(names)))
     for name in names:
-      print('finding item "' + name + '"...')
+      print('@panicButton: finding item "{}"...'.format(name))
       found = self.inventory.findKeyItem(name)
       indicator.printState(found)
     indicator.shake()
-    print('done')
-    print()
-  
-  def setup(self):
-    self.findInventory()
-    self.findKeyItems(['totem-of-undying', 'water-bucket'])
+    print('@panicButton: done')
   #endregion
 
   #region utils
